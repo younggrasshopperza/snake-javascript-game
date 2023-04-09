@@ -1,0 +1,22 @@
+/* CSS styles for the game board */
+#game-board {
+  width: 500px;
+  height: 500px;
+  border: 1px solid black;
+  position: relative;
+}
+
+/* CSS styles for the snake and food */
+.snake, .food {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+}
+
+.snake {
+  background-color: green;
+}
+
+.food {
+  background-color: red;
+}
