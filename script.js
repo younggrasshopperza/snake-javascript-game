@@ -4,7 +4,6 @@ const highScoreBoard = document.getElementById("high-score-board");
 const menu = document.getElementById("menu");
 const classicModeBtn = document.getElementById("classic-mode");
 const spaceModeBtn = document.getElementById("space-mode");
-const crazyModeBtn = document.getElementById("crazy-mode");
 
 let snake = [{x: 10, y: 10}];
 let food = {x: 20, y: 20};
@@ -14,7 +13,8 @@ let paused = false;
 let gameMode = "";
 
 let highScore = parseInt(localStorage.getItem("highScore")) || 0;
-highScoreBoard.textContent = `High Score: ${highScore}`;
+let userName = localStorage.getItem("userName") || "";
+highScoreBoard.textContent = `High Score: ${highScore} - ${userName}`;
 
 function updateHighScore() {
   if (score > highScore) {
@@ -131,7 +131,6 @@ document.addEventListener("keydown", (event) => {
 function selectButton(button) {
     classicModeBtn.classList.remove("selected");
     spaceModeBtn.classList.remove("selected");
-    crazyModeBtn.classList.remove("selected");
     button.classList.add("selected");
   }
   
@@ -146,23 +145,13 @@ function selectButton(button) {
     selectButton(spaceModeBtn);
     startGame();
   });
-  
-  crazyModeBtn.addEventListener("click", () => {
-    gameMode = "crazy";
-    selectButton(crazyModeBtn);
-    startGame();
-  });
 
 function startGame() {
   gameLoop = setInterval(move, 100);
-  if (gameMode === "crazy") {
-    crazyModeInterval = setInterval(crazyModeMove, 500);
-  }
 }
 
 function restartGame() {
     clearInterval(gameLoop);
-    // clearInterval(crazyModeInterval); // Clear crazy mode interval
     snake = [{x: 250, y: 250}];
     food = {x: 20, y: 20};
     direction = "right";
@@ -172,7 +161,6 @@ function restartGame() {
     promptUserName();
   }
 
-  let userName = localStorage.getItem("userName") || "";
 let highScoreName = document.getElementById("high-score-name");
 let highScoreValue = document.getElementById("high-score-value");
 
@@ -191,6 +179,9 @@ function promptUserName() {
     if (userName === null || userName.trim() === "") {
       userName = "Anonymous";
     }
+    highScore = parseInt(localStorage.getItem("highScore")) || 0;
+    userName = localStorage.getItem("userName") || "";
+    highScoreBoard.textContent = `High Score: ${highScore} - ${userName}`;
     localStorage.setItem("highScore", highScore);
     localStorage.setItem("userName", userName);
     highScoreName.textContent = userName;
@@ -199,14 +190,42 @@ function promptUserName() {
   }
 }
 
-function initializeHighScore() {
-    if (highScore === 0) {
-      highScoreName.textContent = "None";
-      highScoreValue.textContent = "-";
-    } else {
-      highScoreName.textContent = userName;
-      highScoreValue.textContent = highScore;
+let touchStartX = null;
+let touchStartY = null;
+
+function handleTouchStart(event) {
+  touchStartX = event.touches[0].clientX;
+  touchStartY = event.touches[0].clientY;
+}
+
+function handleTouchMove(event) {
+  if (!touchStartX || !touchStartY) {
+    return;
+  }
+
+  const touchEndX = event.touches[0].clientX;
+  const touchEndY = event.touches[0].clientY;
+  const diffX = touchStartX - touchEndX;
+  const diffY = touchStartY - touchEndY;
+
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    if (diffX > 0 && direction !== "right") {
+      direction = "left";
+    } else if (diffX < 0 && direction !== "left") {
+      direction = "right";
+    }
+  } else {
+    if (diffY > 0 && direction !== "down") {
+      direction = "up";
+    } else if (diffY < 0 && direction !== "up") {
+      direction = "down";
     }
   }
-  
-  initializeHighScore();
+
+  touchStartX = null;
+  touchStartY = null;
+}
+
+document.addEventListener("touchstart", handleTouchStart, false);
+document.addEventListener("touchmove", handleTouchMove, false);
+
