@@ -4,6 +4,7 @@ const highScoreBoard = document.getElementById("high-score-board");
 const menu = document.getElementById("menu");
 const classicModeBtn = document.getElementById("classic-mode");
 const spaceModeBtn = document.getElementById("space-mode");
+const crazyModeBtn = document.getElementById("crazy-mode");
 
 let snake = [{x: 10, y: 10}];
 let food = {x: 20, y: 20};
@@ -44,38 +45,39 @@ function render() {
 }
 
 function move() {
-  if (paused) {
-    return;
-  }
-
-  const head = {x: snake[0].x, y: snake[0].y};
-
-  switch (direction) {
-    case "up":
-      head.y -= 10;
-      break;
-    case "down":
-      head.y += 10;
-      break;
-    case "left":
-      head.x -= 10;
-      break;
-    case "right":
-      head.x += 10;
-      break;
-  }
-
-  if (gameMode === "classic") {
-    if (head.x < 0 || head.x >= 500 || head.y < 0 || head.y >= 500) {
-      alert("Game over!");
-      restartGame();
+    if (paused) {
+      return;
     }
-  } else if (gameMode === "space") {
-    if (head.x < 0) head.x = 490;
-    if (head.x >= 500) head.x = 0;
-    if (head.y < 0) head.y = 490;
-    if (head.y >= 500) head.y = 0;
-  }
+  
+    const head = {x: snake[0].x, y: snake[0].y};
+  
+    switch (direction) {
+      case "up":
+        head.y -= 10;
+        break;
+      case "down":
+        head.y += 10;
+        break;
+      case "left":
+        head.x -= 10;
+        break;
+      case "right":
+        head.x += 10;
+        break;
+    }
+  
+    if (gameMode === "classic") {
+    if (head.x < 0 || head.x >= 490 || head.y < 0 || head.y >= 490) {
+        alert("Game over!");
+        restartGame();
+        return;
+    }
+    } else if (gameMode === "space") {
+        if (head.x < 0) head.x = 480;
+        if (head.x >= 490) head.x = 0;
+        if (head.y < 0) head.y = 480;
+        if (head.y >= 490) head.y = 0;
+    }
 
   snake.unshift(head);
 
@@ -126,35 +128,85 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-classicModeBtn.addEventListener("click", () => {
-  gameMode = "classic";
-  startGame();
-});
-
-spaceModeBtn.addEventListener("click", () => {
-  gameMode = "space";
-  startGame();
-});
-
-crazyModeBtn.addEventListener("click", () => {
-    gameMode = "crazy";
+function selectButton(button) {
+    classicModeBtn.classList.remove("selected");
+    spaceModeBtn.classList.remove("selected");
+    crazyModeBtn.classList.remove("selected");
+    button.classList.add("selected");
+  }
+  
+  classicModeBtn.addEventListener("click", () => {
+    gameMode = "classic";
+    selectButton(classicModeBtn);
     startGame();
-});
+  });
+  
+  spaceModeBtn.addEventListener("click", () => {
+    gameMode = "space";
+    selectButton(spaceModeBtn);
+    startGame();
+  });
+  
+  crazyModeBtn.addEventListener("click", () => {
+    gameMode = "crazy";
+    selectButton(crazyModeBtn);
+    startGame();
+  });
 
 function startGame() {
-  menu.style.display = "none";
   gameLoop = setInterval(move, 100);
+  if (gameMode === "crazy") {
+    crazyModeInterval = setInterval(crazyModeMove, 500);
+  }
 }
 
 function restartGame() {
-  clearInterval(gameLoop);
-  snake = [{x: 250, y: 250}];
-  food = {x: 20, y: 20};
-  direction = "right";
-  score = 0;
-  paused = false;
-  menu.style.display = "block";
-  render();
+    clearInterval(gameLoop);
+    // clearInterval(crazyModeInterval); // Clear crazy mode interval
+    snake = [{x: 250, y: 250}];
+    food = {x: 20, y: 20};
+    direction = "right";
+    score = 0;
+    paused = false;
+    render();
+    promptUserName();
+  }
+
+  let userName = localStorage.getItem("userName") || "";
+let highScoreName = document.getElementById("high-score-name");
+let highScoreValue = document.getElementById("high-score-value");
+
+let newHighScore = false;
+
+function updateHighScore() {
+  if (score > highScore) {
+    highScore = score;
+    newHighScore = true;
+  }
 }
 
-render();
+function promptUserName() {
+  if (newHighScore) {
+    userName = prompt("New high score! Please enter your name:");
+    if (userName === null || userName.trim() === "") {
+      userName = "Anonymous";
+    }
+    localStorage.setItem("highScore", highScore);
+    localStorage.setItem("userName", userName);
+    highScoreName.textContent = userName;
+    highScoreValue.textContent = highScore;
+    newHighScore = false;
+  }
+}
+
+function initializeHighScore() {
+    if (highScore === 0) {
+      highScoreName.textContent = "None";
+      highScoreValue.textContent = "-";
+    } else {
+      highScoreName.textContent = userName;
+      highScoreValue.textContent = highScore;
+    }
+  }
+  
+  initializeHighScore();

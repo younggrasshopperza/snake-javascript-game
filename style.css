@@ -1,22 +1,104 @@
-/* CSS styles for the game board */
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f0f0;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.game-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+#high-score-board {
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+/* #high-score-board,
+#score-board {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.2rem;
+} */
+
+hr {
+  width: 80%;
+  border: 1px solid #000;
+  margin-bottom: 20px;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 #game-board {
-  width: 500px;
-  height: 500px;
-  border: 1px solid black;
+  width: 490px;
+  height: 490px;
+  border: 1px solid #000;
+  background-color: #fff;
   position: relative;
 }
 
-/* CSS styles for the snake and food */
-.snake, .food {
-  width: 10px;
-  height: 10px;
-  position: absolute;
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .snake {
-  background-color: green;
+  background-color: #0f0;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  transition: all 0.1s linear;
 }
 
 .food {
-  background-color: red;
+  background-color: #f00;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  transition: all 0.1s linear;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  background-color: #ccc;
+  color: #333;
+}
+
+button.selected {
+  background-color: #007bff;
+  color: #fff;
 }

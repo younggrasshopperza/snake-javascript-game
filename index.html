@@ -6,18 +6,26 @@
     <link rel="shortcut icon" href="favicon.avif" type="image/x-icon">
   </head>
   <body>
-    <h1>Snake</h1>
-    <div id="high-score-board">High Score: 0</div>
     <hr>
-    <p>Press the spacebar to pause the game</p>
+    <b>Snake</b>
+    <hr>
+    <!-- <p>Press the spacebar to pause the game</p> -->
     <div id="menu">
         <h2>Select Game Mode</h2>
-        <button id="classic-mode">Classic Mode</button>
-        <button id="space-mode">Space Mode</button>
+        <div class="buttons-container">
+            <button id="classic-mode">Classic Mode</button>
+            <button id="space-mode">Space Mode</button>
+            <button id="crazy-mode">Crazy Mode</button>
+        </div>
         <hr>
     </div>
 
-    <div id="game-board"></div>
+    <div class="game-container">
+        <div id="game-board"></div>
+        <div id="high-score-board">
+            High Score: <span id="high-score-name"></span> - <span id="high-score-value">0</span>
+        </div>
+    </div>
     <div id="score-board">Score: 0</div>
     <script src="script.js"></script>
   </body>
